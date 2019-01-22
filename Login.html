@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html class="ui-page-login">
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<title></title>
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<link href="css/style.css" rel="stylesheet" />
+		<link href="css/wg-common.css" rel="stylesheet" />
+		<link rel="stylesheet" href="css/mui.picker.css" />
+		<link rel="stylesheet" href="css/mui.picker.min.css" />
+		<link rel="stylesheet" href="css/mui.poppicker.css" />
+		<style>
+			.area {
+				margin: 20px auto 0px auto;
+			}
+			
+			.mui-input-group {
+				margin-top: 10px;
+			}
+			
+			.mui-input-group:first-child {
+				margin-top: 20px;
+			}
+			
+			.mui-input-group label {
+				width: 22%;
+			}
+			
+			.mui-input-row label~input,
+			.mui-input-row label~select,
+			.mui-input-row label~textarea {
+				width: 78%;
+			}
+			
+			.mui-checkbox input[type=checkbox],
+			.mui-radio input[type=radio] {
+				top: 6px;
+			}
+			
+			.mui-content-padded {
+				margin-top: 25px;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+			
+			.link-area {
+				display: block;
+				margin-top: 25px;
+				text-align: center;
+			}
+			
+			.spliter {
+				color: #bbb;
+				padding: 0px 8px;
+			}
+			
+			.oauth-area {
+				position: absolute;
+				bottom: 20px;
+				left: 0px;
+				text-align: center;
+				width: 100%;
+				padding: 0px;
+				margin: 0px;
+			}
+			
+			.oauth-area .oauth-btn {
+				display: inline-block;
+				width: 50px;
+				height: 50px;
+				background-size: 30px 30px;
+				background-position: center center;
+				background-repeat: no-repeat;
+				margin: 0px 20px;
+				/*-webkit-filter: grayscale(100%); */
+				border: solid 1px #ddd;
+				border-radius: 25px;
+			}
+			
+			.oauth-area .oauth-btn:active {
+				border: solid 1px #aaa;
+			}
+			
+			.wg-login-logo {
+				padding-top: 25px;
+				text-align: center;
+			}
+			
+			.mui-input-speech~.mui-icon-speech {
+				font-size: 20px;
+				position: absolute;
+				z-index: 1;
+				top: 10px;
+				right: 0;
+				width: 38px;
+				height: 38px;
+				text-align: center;
+				color: #999
+			}
+			
+			.mui-input-row .mui-input-speech~.mui-icon-speech {
+				font-size: 24px;
+				top: 8px;
+			}
+			
+			#historyUserNumber {
+				position: absolute;
+				width: 95%;
+				margin: 10px;
+				display: none;
+				z-index: 100;
+				background-color: white;
+				border: 1px solid gainsboro;
+			}
+			
+			#historyUserNumber ul li {
+				list-style: none;
+			}
+			
+			.footer-img {
+				width: 80%;
+				margin-left: 8%;
+				bottom: 0;
+			}
+			
+			.top-img {
+				width: 80%;
+				margin-left: 8%;
+				margin-top: 12%;
+				margin-bottom: 10%;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<!--<div class="wg-loading">
+				<img src="images/loading.gif" />
+			</div>-->
+			<div class="wg-login-logo">
+				<img src="images/hotline_logo_login.png" class="top-img" />
+			</div>
+			<div id='login-form' class="mui-input-group">
+				<div class="mui-input-row">
+					<!--<label>账号</label>-->
+					<input id='account' type="text" class="mui-input-clear mui-input" placeholder="用户名" />
+				</div>
+				<div>
+					<ul id="historyUserNumber" class="mui-table-view">
+					</ul>
+				</div>
+				<div class="mui-input-row">
+					<!--<label>密码</label>-->
+					<input id='password' type="password" class="mui-input-clear mui-input" placeholder="密码" />
+				</div>
+				<!--<label>密码</label>-->
+				<button id='serverDB' type="serverDB" class="mui-btn mui-btn-block wg-pick" style="border: none;"><请选择账套></请选择账套></button>
+			</div>
+			<div class="mui-input-group">
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell">
+						记住密码
+						<div id="autoLogin" class="mui-switch">
+							<div class="mui-switch-handle"></div>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="mui-content-padded">
+				<button id='login' class="mui-btn mui-btn-block mui-btn-primary">登录</button>
+				<!--未应用付费模块，app中出现用户注册链接时审核不通过，暂时不通过app注册用户-->
+				<div class="link-area" style="display: none;">
+					<a id='reg' style="display: none;">注册</a>
+					<span class="spliter">|</span>
+					<a id='forgetPassword'>忘记密码</a>
+				</div>
+				<div class="link-area" style="display: none;">
+					<a id='demoLogin'>立即体验</a>
+				</div>
+			</div>
+			<div class="mui-content-padded">
+				<div>
+					<img src="images/hotline_footer.png" class="footer-img" />
+				</div>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script src="js/mui.enterfocus.js"></script>
+		<script src="js/mui.picker.min.js"></script>
+		<script src="js/app.js"></script>
+		<script src="js/wgjs/wgpoppicker.js"></script>
+		<script src="js/wgjs/extends.js"></script>
+		<script src="js/wgjs/wgyun.js"></script>
+		<script src="js/wgjs/CommonUtil.js"></script>
+		<script src="js/views/account/login.js"></script>
+		<script>
+			(function($, doc) {
+				$.init({
+					statusBarBackground: '#f7f7f7',
+					swipeBack: false //true启用右滑关闭功能
+				});
+				$.plusReady(function() {
+					Login.init();
+
+					plus.screen.lockOrientation("portrait-primary");
+					var settings = app.getSettings();
+					var state = app.getState();
+					//检查 "登录状态/锁屏状态" 开始
+					if(settings.autoLogin && state.token && settings.gestures) {
+						wgyun.openPage({
+							url: 'unlock.html',
+							id: 'unlock'
+						});
+					} else if(settings.autoLogin && state.token) {
+						//toMain();
+					}
+					// close splash
+					setTimeout(function() {
+						//关闭 splash
+						plus.navigator.closeSplashscreen();
+					}, 600);
+					//检查 "登录状态/锁屏状态" 结束
+					var loginButton = doc.getElementById('login');
+					var accountBox = doc.getElementById('account');
+					var passwordBox = doc.getElementById('password');
+					var autoLoginButton = doc.getElementById("autoLogin");
+					var regButton = doc.getElementById('reg');
+					var serverDBButton = doc.getElementById('serverDB');
+					var forgetButton = doc.getElementById('forgetPassword');
+					var demoLogin = doc.getElementById('demoLogin');
+					loginButton.addEventListener('tap', function(event) {
+						Login.doLogin();
+					});
+					demoLogin.addEventListener('tap', function(event) {
+						Login.demoLogin();
+					});
+					$.enterfocus('#login-form input', function() {
+						$.trigger(loginButton, 'tap');
+					});
+					settings.autoLogin && autoLoginButton.classList.add('mui-active');
+					//					autoLoginButton.classList[settings.autoLogin ? 'add' : 'remove']('mui-active');
+					autoLoginButton.addEventListener('toggle', function(event) {
+						setTimeout(function() {
+							var isActive = event.detail.isActive;
+							settings.autoLogin = isActive;
+							app.setSettings(settings);
+						}, 50);
+					}, false);
+
+					serverDBButton.addEventListener('tap', function(event) {
+						Login.pickHandler(event);
+					});
+					regButton.addEventListener('tap', function(event) {
+						wgyun.openPage({
+							url: 'reg.html',
+							id: 'reg',
+							styles: {
+								popGesture: 'hide'
+							}
+						});
+					}, false);
+					window.addEventListener('resize', function() {
+						//oauthArea.style.display = document.body.clientHeight > 400 ? 'block' : 'none';
+					}, false);
+					// 连续按两次返回键时退出系统
+					var backButtonPress = 0;
+					$.back = function(event) {
+						backButtonPress++;
+						if(backButtonPress > 1) {
+							plus.runtime.quit();
+						} else {
+							mui.toast('再按一次退出望果Mes');
+						}
+						setTimeout(function() {
+							backButtonPress = 0;
+						}, 1500);
+						return false;
+					};
+				});
+
+			}(mui, document));
+		</script>
+	</body>
+
+</html>

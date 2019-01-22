@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/style.css" rel="stylesheet" />
+		<link href="../../css/wg-common.css" rel="stylesheet" />
+		<link href="../../css/mui.picker.css" rel="stylesheet" />
+		<link href="../../css/mui.poppicker.css" rel="stylesheet" />
+		<style>
+			body,
+			.mui-content,
+			.mui-input-group,
+			.wg-date {
+				background-color: #333;
+				color: #fff;
+			}
+			
+			.title {
+				margin: 15px 15px 5px 10px;
+				font-size: 20px;
+			}
+			
+			.wg-pick {
+				border: hidden;
+				background-color: #333;
+				color: #fff;
+				text-align: left;
+			}
+			
+			.mui-btn {
+				padding: 10px;
+			}
+			
+			.wg-row-head {
+				font-size: 12pt;
+				float: left;
+				width: 30%;
+				min-width: 90px;
+				padding-left: 10px;
+				padding-top: 10px;
+			}
+			
+			.wg-date {
+				border: hidden;
+				float: right;
+			}
+			
+			.wg-row-text {
+				text-align: left;
+				float: right;
+			}
+			
+			.wg-group {
+				margin-bottom: 5px;
+			}
+			
+			.wg-group-label {
+				margin-left: 5px;
+				margin-right: 10px;
+				word-break: keep-all;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="title">搜索</div>
+			<!--<div class="title" style="margin-bottom: 25px;">条件</div>-->
+			<form class="mui-input-group" style="margin-left: 10px; margin-right: 10px ;">
+
+			</form>
+
+			<div class="mui-card" style="background-color: #333; margin-top: 5px; clear: both; display: none;">
+				<ul class="mui-table-view" style="background-color: #333;">
+					<li class="mui-table-view-cell mui-collapse" style="background-color: #333;">
+						<a id="divGroupTitle" class="mui-navigate-right" href="#">分组</a>
+						<div id="divGroupItems" class="mui-collapse-content" style="background-color: #333;">
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="mui-content-padded">
+				<button id='btnSubmit' class="mui-btn mui-btn-block mui-btn-primary">查找</button>
+				<button id='btnScan' class="mui-btn mui-btn-block mui-btn-primary" style="display: none;">扫一扫</button>
+			</div>
+		</div>
+		</div>
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mui.enterfocus.js"></script>
+		<script src="../../js/mui.picker.js"></script>
+		<script src="../../js/wgjs/wgyun.js"></script>
+		<script src="../../js/wgjs/WebviewManager.js"></script>
+		<script src="../../js/wgjs/CommonUtil.js"></script>
+		<script src="../../js/wgjs/extends.js"></script>
+		<!--<script src="../../js/mui.poppicker.js"></script>-->
+		<script src="../../js/wgjs/wgpoppicker.js"></script>
+		<script src="../../js/wgjs/BasicData.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			var fGroupBy, fSearchField;
+			var groupTitle = document.getElementById("divGroupTitle");
+			var divGroupBy = document.getElementById("divGroupItems");
+			var btnScan = document.getElementById('btnScan');
+			mui.init({
+				keyEventBind: {
+					backbutton: false,
+					menubutton: false
+				}
+			}); //获得侧滑主窗口webview对象
+			var main = null,
+				self;
+			mui.plusReady(function() {
+				self = plus.webview.currentWebview();
+				main = self.opener();
+				fSearchField = self.fSearchField;
+				fGroupBy = self.fGroupBy;
+				mShowScan = self.showScan;
+				document.querySelector('.mui-input-group').innerHTML = '';
+				divGroupBy.innerHTML = '';
+				document.querySelector('.mui-collapse').classList.remove('mui-active');
+				document.querySelector('.mui-card').style.display = "none";
+				if(mShowScan) {
+					btnScan.style.display = 'block';
+				} else {
+					btnScan.style.display = 'none';
+				}
+				// 生成搜索条件
+				appendSearch();
+				appendGroupBy();
+				// 生成分组条件
+				// 为日期选择框添加事件响应
+				mui(".wg-date").each(function() {
+					CommonUtil.openDatePicker(this);
+				});
+				//				self.addEventListener('show', function() {
+				//					main = WebviewManager.getOpener();
+				//				});
+			});
+
+			function closeMenu() {
+				main.evalJS('WebviewManager.closeFilterMenu()')
+				//				mui.fire(main, 'closeFilter');
+			}
+			//优化显示出来的侧滑菜单，只需监听该菜单的右滑事件，然后将其关闭即可；在菜单上左滑，不做任何操作；
+			window.addEventListener("swiperight", closeMenu);
+			mui.menu = closeMenu;
+			document.getElementById('btnSubmit').addEventListener('tap', function(event) {
+				closeMenu();
+				mui.fire(main, 'submitFilter', {
+					search: getSearchJson(),
+					groupBy: getGroupbyJson()
+				});
+			});
+			btnScan.addEventListener('tap', function(event) {
+				closeMenu();
+				mui.fire(main, 'showScan', {
+					search: getSearchJson(),
+					groupBy: getGroupbyJson()
+				});
+			});
+			/**
+			 *添加搜索条件 
+			 */
+			function appendSearch() {
+				var table = document.body.querySelector('.mui-input-group');
+				mui.each(fSearchField.SearchField, function(index, item) {
+					var div = document.createElement('div');
+					div.className = 'mui-input-row';
+					var sHtml = '';
+					switch(item.fType) {
+						case "varchar":
+							{
+								if(item.fSelectValues) {
+									item.fSelectValues = eval('(' + item.fSelectValues + ')');
+									div.style.clear = "both";
+									div.style.backgroundColor = '#333';
+									sHtml += '<span class="mui-tab-label wg-row-head" style="background-color: #333;">' + item.fName + '</span>';
+									sHtml += '<select  class="mui-btn mui-btn-block mui-input-clear wg-row-text" name="' + item.fField + '" fCompare="' + (item.fCompare ? item.fCompare : '%*%') + '"  class="" style="width: 60%;background-color: #333; color: #fff;">';
+									mui.each(item.fSelectValues, function(index, element) {
+										sHtml += '<option value="' + element.value + '">' + element.name + '</option>';
+									});
+									sHtml += '</select>';
+									div.innerHTML = sHtml;
+									table.appendChild(div);
+								} else {
+									div.innerHTML += '<span class="mui-tab-label wg-row-head">' + item.fName + '</span>';
+									div.innerHTML += '<input name="' + item.fField + '" fCompare="' + (item.fCompare ? item.fCompare : '%*%') + '" type="text" class="mui-input-clear wg-row-text" placeholder="' + (item.fDesc ? item.fDesc : item.fName) + '" style="width: 60%;" />';
+									table.appendChild(div);
+								}
+							}
+							break;
+						case "bit":
+							{
+								div.style.clear = "both";
+								div.style.marginLeft = '20%';
+								div.className = 'mui-input-row mui-checkbox mui-left';
+								div.innerHTML = '<label>' + item.fName + '</label><input name="' + item.fField + '"  fCompare="' + (item.fCompare ? item.fCompare : '=') + '" fValue="' + item.fValue + '" ' + (item.fChecked ? 'checked' : '') + ' class="wg-group" value="" type="checkbox">';
+								//								div.innerHTML += '<input name="' + item.fField + '" style="float:left; margin-top: 10px;" fCompare="' + (item.fCompare ? item.fCompare : '=') + '" fValue="' + item.fValue + '" type="checkbox" class="mui-input-clear" placeholder="' + (item.fDesc ? item.fDesc : item.fName) + '" style="" />'
+								//								div.innerHTML += '<label for="' + item.fField + '" class="" style="width: auto;">' + item.fName + '</label>';
+								table.appendChild(div);
+							}
+							break;
+						case "pick":
+							{
+								div.style.clear = "both";
+								var div = document.createElement('div');
+								div.className = 'mui-input-row mui-left';
+								div.style.backgroundColor = '#333';
+								div.innerHTML += '<span class="mui-tab-label wg-row-head">' + item.fName + '</span>';
+								div.innerHTML += '<button name="' + item.fField + '" type="button" fCompare="' + (item.fCompare ? item.fCompare : '=') + '" class="mui-btn mui-btn-block wg-pick" style="width: 60%;  text-align:center; float:right;">' + (item.fDesc ? item.fDesc : item.fName) + '</button>';
+								table.appendChild(div);
+								document.querySelector('button[name="' + item.fField + '"]').addEventListener('tap', function(event) {
+									BasicData.pickHandler(event, item.fSearchType, item.fSearchField, item.fValueField, '', item.fQueryString);
+								});
+							}
+							break;
+						case "date":
+							{
+								div.style.clear = "both";
+								var d1, d2;
+								var now = new Date();
+								d2 = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
+								now = now.addDays(-30);
+								d1 = now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + now.getDate();
+								div.innerHTML += '<span class="mui-tab-label wg-row-head">起始日期</span>';
+								div.innerHTML += '<button name="' + item.fField + '" type="button" fCompare="' + (item.fCompare ? item.fCompare : '=') + '" class="mui-btn mui-btn-block wg-date wg-beginDate" style="width: 60%; text-align:center; float:right;">' + d1 + '</button>';
+								table.appendChild(div);
+								var div = document.createElement('div');
+								div.innerHTML += '<span class="mui-tab-label wg-row-head">结束日期</span>';
+								div.innerHTML += '<button name="' + item.fField + '" type="button" fCompare="' + (item.fCompare ? item.fCompare : '=') + '" class="mui-btn mui-btn-block wg-date wg-endDate" style="width: 60%;  text-align:center; float:right;">' + d2 + '</button>';
+								table.appendChild(div);
+							}
+							break;
+					}
+					table.appendChild(div);
+				});
+			}
+			/**
+			 * 添加分组条件
+			 */
+			function appendGroupBy() {
+				if(!fGroupBy.GroupBy || fGroupBy.GroupBy == "") {
+					//console.log('没有分组条件');
+					return;
+				}
+				document.querySelector('.mui-card').style.display = "block";
+				groupTitle.style.display = "block";
+				groupTitle.style.clear = "both";
+				mui.each(fGroupBy.GroupBy, function(index, item) {
+					var groupItem = document.createElement("div");
+					groupItem.className = 'mui-input-row mui-checkbox mui-left';
+					groupItem.style.float = "left";
+					groupItem.innerHTML = '<label>' + item.fName + '</label><input name="' + item.fField + '" class="wg-group" value="" type="checkbox">';
+					//'<li class = "wg-group-li"><input name="' + item.fField + '" value="" type="checkbox" class="wg-group">' + '<label class="wg-group-label" for="' + item.fField + '">' + item.fName + '</label></li>';							
+					divGroupBy.appendChild(groupItem);
+				});
+			};
+			/**
+			 * 选择器
+			 */
+			var l1Picker = null; // 一级
+			var l2Picker = null; // 二级
+			var l1PickType = null;
+			var l2PickType = null;
+			var searchTexts = {};
+
+			function pickHandler(event, fSearchType, fSearchField, fValueField, fQueryString) {
+				var tPicker = null,
+					tl1Type = false,
+					tl2Type = false;
+				fSearchField = (fSearchField ? fSearchField : 'FName');
+				fValueField = (fValueField ? fValueField : 'text'); // 默认取显示文本text, value为可选
+				var url = '',
+					sTitle = '';
+				if(fSearchType == 'Product') {
+					tl2Type = true;
+					url = CommonUtil.HostUrl + '/Basic/Product.asmx/GetList';
+					if(!l2Picker) {
+						l2Picker = new mui.PopPicker({
+							layer: 2
+						});
+					}
+					sTitle = '商品选择';
+					tPicker = l2Picker;
+				} else if(fSearchType == 'TargetDept') {
+					tl1Type = true;
+					url = CommonUtil.HostUrl + '/Basic/Dept.asmx/GetComboList';
+					if(!l1Picker) {
+						l1Picker = new mui.PopPicker();
+					}
+					sTitle = ('部门选择');
+					tPicker = l1Picker;
+				} else if(fSearchType == 'FManufStatus') {
+					tl1Type = true;
+					var statusArray = [];
+					statusArray.push({
+						FItemID: 0,
+						FName: '生产中'
+					});
+					statusArray.push({
+						FItemID: -1,
+						FName: '待签收'
+					});
+					statusArray.push({
+						FItemID: 1,
+						FName: '待下工序签收'
+					});
+					statusArray.push({
+						FItemID: 2,
+						FName: '完成'
+					});
+					url = CommonUtil.HostUrl + '/Basic/Dept.asmx/GetComboList';
+					if(!l1Picker) {
+						l1Picker = new mui.PopPicker();
+					}
+					sTitle = ('部门选择');
+					tPicker = l1Picker;
+				}
+				if(tPicker) {
+					tPicker.setTitle(sTitle);
+					if(tl2Type && fSearchType != l2PickType) {
+						l2PickType = fSearchType;
+						setPickData(tPicker, url, fSearchField, (searchTexts[fSearchType] != undefined ? searchTexts[fSearchType] : ''), fQueryString);
+					} else if(tl1Type && fSearchType != l2PickType) {
+						l1PickType = fSearchType;
+						setPickData(tPicker, url, fSearchField, (searchTexts[fSearchType] != undefined ? searchTexts[fSearchType] : ''), fQueryString);
+					}
+					tPicker.show(function(items) {
+						var maxIndex = items.length - 1;
+						if(items.length >= maxIndex && (items[maxIndex][fValueField] != null && items[maxIndex][fValueField] != undefined)) {
+							event.target.innerHTML = items[maxIndex].text;
+							event.target.setAttribute('fValue', items[maxIndex][fValueField]);
+						} else {
+							mui.toast('当前选择无效，请尝试选择其他项!');
+						}
+						//返回 false 可以阻止选择框的关闭
+						//return false;
+					}, function(value) {
+						searchTexts[fSearchType] = value;
+						setPickData(tPicker, url, fSearchField, value);
+					});
+				}
+			};
+
+			function setPickData(picker, fSearchUrl, field, value, fQueryString) {
+				wgyun.showCommonWaiting();
+				var ajaxData = {
+					field: field,
+					value: value
+				};
+				ajaxData = wgyun.JsonExtend(fQueryString, ajaxData);
+				var ajaxCallback = function(data) {
+					if(data.FIsSuccess) {
+						picker.setData(data.FObject);
+					} else {
+						picker.setData([]);
+						mui.toast(data.FMsg);
+					}
+					wgyun.closeWaiting();
+				};
+				CommonUtil.ajax(fSearchUrl, ajaxData, ajaxCallback);
+			};
+
+			function getSearchJson() {
+				var table = document.body.querySelector('.mui-input-group');
+				var filters = [];
+				mui(".mui-input-group input, .mui-input-group select, .mui-input-group button").each(function(index, item) {
+					var value = '';
+					if(item.type == 'checkbox' && item.checked) {
+						value = item.getAttribute('fValue');
+					} else if(item.classList.contains("wg-pick") && item.getAttribute('fValue')) {
+						value = item.getAttribute('fValue');
+					} else if(item.value) {
+						value = item.value;
+					}
+					if(value) {
+						FilterUtil.appendFilter(filters, {
+							FLeftQuote: '',
+							FName: item.name,
+							FCompare: item.getAttribute('fCompare'), //'%*%' 
+							FValue: value,
+							FRightQuote: '',
+							FLogic: 'And'
+						});
+					}
+				});
+				mui(".mui-input-group .wg-date").each(function(index, item) {
+					var fCompare = '>';
+					if(item.classList.contains("wg-beginDate")) {
+						fCompare = '>=';
+					}
+					if(item.classList.contains("wg-endDate")) {
+						fCompare = '<='
+					}
+					if(CommonUtil.isDate(item.innerHTML) && item.innerHTML) {
+						FilterUtil.appendFilter(filters, {
+							FLeftQuote: '',
+							FName: item.name,
+							FCompare: fCompare,
+							FValue: item.innerText,
+							FRightQuote: '',
+							FLogic: 'And'
+						});
+					}
+				});
+				FilterUtil.trimLastLogic(filters);
+				return filters;
+			}
+
+			function getGroupbyJson() {
+				var table = document.body.querySelector('.mui-input-group');
+				var listGrp = new Array();
+				// 获取分组结果json
+				var jsonGrp = "";
+				//var jsonGrp = "{'GroupBy': '{0}'}";
+				mui(".wg-group").each(function(index, item) {
+					if(item.checked) {
+						listGrp.push(item.name);
+					}
+				});
+				//jsonGrp = jsonGrp.format(listGrp.join("; "));
+				jsonGrp = listGrp.join(";");
+				return jsonGrp;
+			}
+		</script>
+	</body>
+
+</html>

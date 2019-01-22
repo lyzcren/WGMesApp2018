@@ -1,0 +1,323 @@
+/** {
+	touch-action: none;
+}*/
+
+* {
+	margin: 0;
+	padding: 0;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-webkit-tap-highlight-color: transparent;
+}
+
+.mui-input[readonly] {
+	color: #777777;
+}
+
+
+/*列表*/
+
+.mescroll {
+	position: fixed;
+	top: 0px;
+	bottom: 0;
+	height: auto;
+}
+
+.wg-list-content {
+	width: 86%;
+}
+
+.wg-list-title {
+	max-height: 22px;
+	font-size: large;
+	color: #508ecb;
+	overflow: hidden;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+
+.wg-list-desc {
+	max-height: 18px;
+	font-size: medium;
+	color: Gray;
+	overflow: hidden;
+	word-break: break-all;
+	word-wrap: break-word;
+}
+
+.wg-info-title {
+	padding: 10px 15px 7px;
+	background: #EEEEEE;
+	color: #000000;
+	font-size: 15px;
+}
+
+.wg-table-view-title {
+	padding: 10px 15px 7px;
+	background: #EEEEEE;
+	color: #000000;
+	font-size: 15px;
+	border-top: none;
+	border-bottom: solid 1px #AAAAAA;
+}
+
+.wg-table-view-cell {
+	position: relative;
+	margin-top: 0;
+	margin-bottom: 0;
+	padding-left: 0;
+	list-style: none;
+	background-color: #fff;
+	border-top: none;
+	border-bottom: solid 1px #AAAAAA;
+}
+
+.wg-list-col1 {
+	width: 35%;
+	color: #508ecb;
+}
+
+.wg-editTag {
+	font-size: 10px;
+	color: #508ecb;
+}
+
+.wg-editTag-force {
+	font-size: 10px;
+	color: red;
+}
+
+.wg-list-col2 {
+	width: 65%;
+	color: black;
+	word-break: break-word;
+	text-align: right;
+}
+
+.wg-loading {
+	display: none;
+	position: absolute;
+	top: 50%;
+	left: 45%;
+	z-index: 999;
+}
+
+.wg-menuitemlabel {
+	margin-left: 2px;
+}
+
+.wg-group-li {
+	float: left;
+	list-style: none;
+	padding-left: -10px;
+}
+
+.wg-float-left {
+	float: left;
+}
+
+.wg-btn-placeHolder {
+	color: #999999;
+}
+
+.wg-icon~.mui-tab-label {
+	font-size: 11px;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.wg-icon .mui-badge {
+	font-size: 10px;
+	line-height: 1.4;
+	position: absolute;
+	top: -2px;
+	left: 100%;
+	margin-left: -10px;
+	padding: 1px 5px;
+	color: white;
+	background: red;
+}
+
+.blue {
+	color: #007aff;
+}
+
+.blue2 {
+	color: dodgerblue;
+}
+
+.yellow {
+	color: yellow;
+}
+
+@font-face {
+	font-family: 'icomoon';
+	font-weight: normal;
+	font-style: normal;
+	src: url('../fonts/icomoon.ttf') format('truetype');
+}
+
+.wg-icon {
+	font-family: 'icomoon' !important;
+	font-size: 20px;
+	font-weight: normal;
+	font-style: normal;
+	line-height: 24px;
+	display: inline-block;
+	text-decoration: none;
+	-webkit-font-smoothing: antialiased;
+	padding-bottom: 0px;
+	padding-top: 0px;
+	position: relative;
+	top: 0px;
+}
+
+.wg-icon-home:before {
+	content: "\e909";
+}
+
+.wg-icon-files-empty:before {
+	content: "\e900";
+}
+
+.wg-icon-folder-download:before {
+	content: "\e901";
+}
+
+.wg-icon-folder-upload:before {
+	content: "\e902";
+}
+
+.wg-icon-price-tag:before {
+	content: "\e903";
+}
+
+.wg-icon-price-tags:before {
+	content: "\e90a";
+}
+
+.wg-icon-barcode:before {
+	content: "\e90b";
+}
+
+.wg-icon-cart:before {
+	content: "\e904";
+}
+
+.wg-icon-coin-yen:before {
+	content: "\e905";
+}
+
+.wg-icon-floppy-disk:before {
+	content: "\e906";
+}
+
+.wg-icon-database:before {
+	content: "\e907";
+}
+
+.wg-icon-binoculars:before {
+	content: "\e90c";
+}
+
+.wg-icon-search:before {
+	content: "\e90d";
+}
+
+.wg-icon-cogs:before {
+	content: "\e90e";
+}
+
+.wg-icon-bin:before {
+	content: "\e90f";
+}
+
+.wg-icon-bin2:before {
+	content: "\e910";
+}
+
+.wg-icon-switch:before {
+	content: "\e911";
+}
+
+.wg-icon-download2:before {
+	content: "\e912";
+}
+
+.wg-icon-upload2:before {
+	content: "\e913";
+}
+
+.wg-icon-notification:before {
+	content: "\e914";
+}
+
+.wg-icon-question:before {
+	content: "\e915";
+}
+
+.wg-icon-plus:before {
+	content: "\e916";
+}
+
+.wg-icon-minus:before {
+	content: "\e917";
+}
+
+.wg-icon-info:before {
+	content: "\e918";
+}
+
+.wg-icon-cancel-circle:before {
+	content: "\e919";
+}
+
+.wg-icon-blocked:before {
+	content: "\e91a";
+}
+
+.wg-icon-cross:before {
+	content: "\e91b";
+}
+
+.wg-icon-checkmark:before {
+	content: "\e91c";
+}
+
+.wg-icon-enter:before {
+	content: "\e91d";
+}
+
+.wg-icon-exit:before {
+	content: "\e91e";
+}
+
+.wg-icon-loop:before {
+	content: "\e91f";
+}
+
+.wg-icon-circle-up:before {
+	content: "\e920";
+}
+
+.wg-icon-circle-right:before {
+	content: "\e921";
+}
+
+.wg-icon-circle-down:before {
+	content: "\e922";
+}
+
+.wg-icon-circle-left:before {
+	content: "\e923";
+}
+
+.wg-icon-filter:before {
+	content: "\e924";
+}
+
+.wg-icon-codepen:before {
+	content: "\e908";
+}

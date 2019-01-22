@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>工艺路线</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../../css/mui.min.css">
+		<link rel="stylesheet" href="../../../css/wg-common.css">
+		<style type="text/css">
+			.mui-input-group *[readonly] {
+				color: #666666;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content mui-table-view" id="main">
+			<li class="mui-table-view-cell" v-for="(item, key) in items">
+				{{key}}: {{item.FDeptFullName}}
+			</li>
+		</div>
+		<script src="../../../js/mui.min.js"></script>
+		<script src="../../../js/vue.min.js"></script>
+		<!--<script src="../../../js/mui.enterfocus.js"></script>
+		<script src="../../../js/mui.picker.min.js"></script>-->
+		<script src="../../../js/wgjs/extends.js"></script>
+		<script src="../../../js/wgjs/wgyun.js"></script>
+		<script src="../../../js/wgjs/ViewConfig.js"></script>
+		<script src="../../../js/wgjs/WebviewManager.js"></script>
+		<script src="../../../js/wgjs/CommonUtil.js"></script>
+		<!--<script src="../../../js/wgjs/GridColumnsUtil.js"></script>-->
+		<script src="../../../js/wgjs/BasicData.js"></script>
+		<!--<script src="../../../js/views/Prod/Flow/ConfigColumns.js"></script>-->
+		<script src="../../../js/views/Prod/Flow/View_Routing.js"></script>
+		<!--千万不要启用一下代码提前加载H5+,
+			提前加载会导致各种bug-->
+		<!--<script src="html5plus://ready"></script>-->
+		<script>
+			//			mui.init({
+			//				keyEventBind: {
+			//					backbutton: false, //Boolean(默认true)关闭back按键监听
+			//					menubutton: false //Boolean(默认true)关闭menu按键监听
+			//				}
+			//			});
+
+			if(window.plus && window.mui) {
+				oTarget.plusready();
+			} else {
+				document.addEventListener('plusready', function(event) {
+					oTarget.plusready();
+				}, false);
+			}
+		</script>
+	</body>
+
+</html>

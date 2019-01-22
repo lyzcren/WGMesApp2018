@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>进货管理</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/wg-common.css">
+		<link rel="stylesheet" href="../../css/iconfont.css">
+		<style type="text/css">
+			.title {
+				margin: 10px 15px 7px;
+				color: #6d6d72;
+				font-size: 15px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" style="word-break: break-all;">
+			<ul class="mui-table-view"></ul>
+			<!--<ul class="mui-table-view mui-grid-view mui-grid-9"></ul>-->
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/wgjs/extends.js"></script>
+	<script src="../../js/wgjs/wgyun.js"></script>
+	<script src="../../js/wgjs/CommonUtil.js"></script>
+	<script src="../../js/wgjs/ViewConfig.js"></script>
+	<script src="../../js/wgjs/WebviewManager.js"></script>
+	<script src="../../js/wgjs/ManageMenuItem.js"></script>
+	<script src="../../js/views/Prod/Prod.js"></script>
+	<script>
+		mui.init({
+			swipeBack: false //启用右滑关闭功能
+		});
+		mui.plusReady(function() {
+			oTarget.init();
+			var opener = plus.webview.currentWebview().opener();
+			//主界面向右滑动，若菜单未显示，则显示菜单；否则不做任何操作；
+			window.addEventListener("swiperight", function() {
+				//mui.fire(opener, 'ShowMenu', {});
+			});
+			//主界面向左滑动，若菜单已显示，则关闭菜单；否则，不做任何操作；
+			window.addEventListener("swipeleft", function() {
+				mui.fire(opener, 'CloseMenu', {});
+			});
+			// 主界面打开时，默认显示此页面，所以当此页面加载完成后关闭主界面的【等待】
+			if(plus.webview.currentWebview().parent())
+				plus.webview.currentWebview().parent().evalJS('wgyun.closeWaiting();');
+		});
+	</script>
+
+</html>

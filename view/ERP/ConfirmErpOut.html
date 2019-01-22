@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>出库单校验</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/mescroll.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/wg-common.css">
+		<link rel="stylesheet" href="../../css/iconfont.css">
+		<style type="text/css">
+			.mui-bar-footer {
+				height: 60px;
+			}
+			
+			.wg-list-content {
+				width: 100%;
+			}
+			
+			.mescroll {
+				margin-top: 75px;
+			}
+			
+			#btnScan,
+			#btnSubmit {
+				margin-top: 10px;
+				width: 45%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="dataSource">
+			<header>
+				<!--<a><span class="wg-icon wg-icon-scan"></span></a>-->
+				<ul class="mui-table-view mui-table-view-chevron">
+					<li class="mui-table-view-cell mui-media">
+						<a class="mui-navigate-right" @tap="oTarget.chooseBillNo()">
+							<img class="mui-media-object mui-pull-left head-img" id="head-img" src="">
+							<div class="mui-media-body">
+								出库单
+								<p class='mui-ellipsis'>单号：{{FBillNo}}</p>
+							</div>
+						</a>
+					</li>
+				</ul>
+			</header>
+			<!--列表信息流 开始-->
+			<div id="pullrefresh" class="mescroll">
+				<!--<div id="pullrefresh" class="mui-scroll-wrapper">-->
+				<!--<div class="mui-scroll">-->
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-media" v-for="item in items">
+						<a href="javascript:;" :data-guid="item.guid" @tap="">
+							<div class="wg-menuitemlabel wg-list-content" style="float: left;">
+								<div class="wg-list-title">{{item.FModel}}</div>
+								<div class="wg-list-desc"><!--批号:{{item.FBatchNo}}-->
+									<div style="float:right">数量:{{item.FQty}}</div>
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+				<!--</div>-->
+			</div>
+			<!--列表信息流 结束-->
+			<footer class="mui-bar mui-bar-footer">
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block mui-pull-left" id="btnScan" @tap="oTarget.showScan()">添加</button>
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block mui-pull-right" id="btnSubmit" @tap="oTarget.submit()">提交</button>
+				<!--<a href="#bottomPopover" class="mui-btn mui-btn-link mui-pull-left">菜单</a>
+			<a href="#bottomPopover" class="mui-btn mui-btn-link mui-pull-right">提交</a>-->
+			</footer>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/mescroll.min.js"></script>
+		<script src="../../js/common.js"></script>
+		<script src="../../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../js/wgjs/VueExtends.js"></script>
+		<script src="../../js/wgjs/extends.js"></script>
+		<script src="../../js/wgjs/wgyun.js"></script>
+		<script src="../../js/wgjs/ViewConfig.js"></script>
+		<script src="../../js/wgjs/WebviewManager.js"></script>
+		<script src="../../js/wgjs/CommonUtil.js"></script>
+		<script src="../../js/wgjs/GridColumnsUtil.js"></script>
+		<script src="../../js/wgjs/SysObject.js"></script>
+		<script src="../../js/views/ERP/ConfirmErpOut.js"></script>
+		<script>
+			if(window.plus && window.mui) {
+				oTarget.plusready();
+			} else {
+				document.addEventListener('plusready', function(event) {
+					oTarget.plusready();
+				}, false);
+			}
+		</script>
+	</body>
+
+</html>

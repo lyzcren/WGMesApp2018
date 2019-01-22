@@ -1,0 +1,87 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>出库单选择列表</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/style.css" rel="stylesheet" />
+		<link href="../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../css/mescroll.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../css/wg-common.css">
+		<link rel="stylesheet" href="../../css/iconfont.css">
+		<style type="text/css">
+			.wg-list-content {
+				width: 100%;
+			}
+			
+			.mescroll {
+				margin-top: 45px;
+			}
+			
+			#billNo{
+				width: 72%;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="dataSource">
+			<header>
+				<!--<a><span class="wg-icon wg-icon-scan"></span></a>-->
+				<div class="mui-input-group">
+					<div class="mui-input-row">
+						<!--<label>账号</label>-->
+						<input id='billNo' type="text" class="mui-input" placeholder="出库单" v-model="FBillNo" />
+						<button type="button" class="mui-btn mui-btn-primary mui-pull-right" id="btnScan" @tap="oTarget.query()">查找</button>
+					</div>
+	
+			</header>
+			<!--列表信息流 开始-->
+			<div id="pullrefresh" class="mescroll">
+				<!--<div id="pullrefresh" class="mui-scroll-wrapper">-->
+				<!--<div class="mui-scroll">-->
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-media" v-for="item in items">
+						<a href="javascript:;" :data-guid="item.guid" @tap="oTarget.selected(item)">
+							<div class="wg-menuitemlabel wg-list-content" style="float: left;">
+								<div class="wg-list-title">{{item.FBillNo}}</div>
+								<div class="wg-list-desc">
+									<!--批号:{{item.FBatchNo}}-->
+									<!--<div style="float:right">数量:{{item.FQty}}</div>-->
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+				<!--</div>-->
+			</div>
+			</div>
+
+			<script src="../../js/mui.min.js"></script>
+			<script src="../../js/mescroll.min.js"></script>
+			<script src="../../js/common.js"></script>
+			<script src="../../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+			<script src="../../js/wgjs/VueExtends.js"></script>
+			<script src="../../js/wgjs/extends.js"></script>
+			<script src="../../js/wgjs/wgyun.js"></script>
+			<script src="../../js/wgjs/ViewConfig.js"></script>
+			<script src="../../js/wgjs/WebviewManager.js"></script>
+			<script src="../../js/wgjs/CommonUtil.js"></script>
+			<script src="../../js/wgjs/GridColumnsUtil.js"></script>
+			<script src="../../js/wgjs/SysObject.js"></script>
+			<script src="../../js/views/ERP/ChooseErpOutList.js"></script>
+			<script>
+				if(window.plus && window.mui) {
+					oTarget.plusready();
+				} else {
+					document.addEventListener('plusready', function(event) {
+						oTarget.plusready();
+					}, false);
+				}
+			</script>
+	</body>
+
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>菜单项管理</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/wg-common.css">
+		<link rel="stylesheet" href="../../css/iconfont.css">
+		<style type="text/css">
+
+		</style>
+	</head>
+
+	<body>
+		<div id="div_menu" class="mui-content mui-table-view">
+			<template v-for="item in items">
+				<child :message="item.FName" :active="item.FIsActive" :icon="item.iconClass" :fDevNumber="item.FDevNumber"></child>
+			</template>
+		</div>
+
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/vue.min.js"></script>
+		<script src="../../js/wgjs/wgyun.js"></script>
+		<script src="../../js/wgjs/extends.js"></script>
+		<script src="../../js/wgjs/CommonUtil.js"></script>
+		<script>
+			var self, opener, panel;
+			var module, menus, max;
+			var CurrentList = [];
+
+			Vue.component('vueSwitch', {
+				props: ['active'],
+				template: '<div v-bind:class="[`mui-switch`, `mui-switch-mini`, active?`mui-active`:``]" @toggle="switchToggle"><div class="mui-switch-handle"></div></div>'
+			});
+			// 注册
+			Vue.component('child', {
+				props: ['message', 'active', 'icon', 'fDevNumber'],
+				template: '<li class="mui-table-view-cell" :fDevNumber="fDevNumber"><span :class="[`wg-icon`, icon]"></span><span> {{message}}</span>' +
+					'<vueSwitch :active="active"></vueSwitch>' +
+					'</li>'
+			});
+
+			var VueMenu = new Vue({
+				el: "#div_menu",
+				data: {
+					items: []
+				},
+				updated: function() {
+					this.$nextTick(function() {
+						mui('.mui-switch').switch();
+					})
+				}
+			});
+
+			function switchToggle(event) {
+				//event.detail.isActive 可直接获取当前状态
+				var fDevNumber = event.target.parentNode.getAttribute('fDevNumber');
+				if(event.detail.isActive) {
+					CurrentList.push(fDevNumber);
+					Settings.setSettingsByName('MainMenuList' + module, CurrentList);
+					if(max > 0 && CurrentList.length > max) {
+						mui('.mui-table-view-cell[fDevNumber="' + fDevNumber + '"] .mui-switch').switch().toggle();
+						mui.toast('最多只能添加' + max + '个');
+					}
+				} else {
+					CurrentList.remove(fDevNumber);
+					Settings.setSettingsByName('MainMenuList' + module, CurrentList);
+				}
+				opener.evalJS('refreshMainMenuList()');
+			}
+
+			mui.init({ //启用右滑关闭功能
+				swipeBack: false
+			});
+			mui.plusReady(function() {
+				self = plus.webview.currentWebview();
+				opener = self.opener();
+				module = self.module;
+				menus = self.menus;
+				max = self.max;
+
+				refreshList();
+			});
+			/**
+			 * 刷新菜单列表
+			 */
+			function refreshList() {
+				var configList = Settings.getSettingsByName('MainMenuList' + module);
+				mui.each(menus, function(index, element) {
+					if(configList.indexOf(element.FDevNumber) >= 0) {
+						element.FIsActive = true;
+						element.iconClass = 'wg-icon-' + element.FDevNumber.toLowerCase();
+						CurrentList.push(element.FDevNumber);
+					}
+				});
+				VueMenu.items = menus;
+			};
+		</script>
+	</body>
+
+</html>

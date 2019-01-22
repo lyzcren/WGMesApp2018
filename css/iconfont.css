@@ -1,0 +1,146 @@
+@font-face {
+	font-family: "iconfont";
+	font-weight: normal;
+	font-style: normal;
+	src: url('../fonts/iconfont.ttf') format('truetype');
+}
+
+.wg-icon {
+	font-family: 'iconfont' !important;
+	font-size: 20px;
+	font-weight: normal;
+	font-style: normal;
+	line-height: 24px;
+	display: inline-block;
+	text-decoration: none;
+	-webkit-font-smoothing: antialiased;
+	padding-bottom: 0px;
+	padding-top: 0px;
+	position: relative;
+	top: 0px;
+}
+
+.iconfont {
+	font-family: "iconfont" !important;
+	font-size: 16px;
+	font-style: normal;
+	-webkit-font-smoothing: antialiased;
+	-webkit-text-stroke-width: 0.2px;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+
+.wg-grid-icon-size {
+	padding-top: 8px;
+	color: #6d6d72;
+	font-size: 30pt;
+	padding-bottom: 8px;
+}
+
+.wg-grid-label-size {
+	color: #6d6d72;
+	font-size: 10pt;
+}
+
+
+/*以下为图标颜色样式 blue:#508ecb, yellow:#fcd209, green: #4cb849, red: #e23130 */
+
+.wg-icon:before {
+	color: #508ecb;
+}
+/*-主页tab图标-*/
+
+
+/*.wg-icon-main:before { color: #508ecb; }
+.wg-icon-buy:before { color: #508ecb; }
+.wg-icon-sale:before { color: #508ecb; }
+.wg-icon-warehouse:before { color: ##508ecb; }
+.wg-icon-finance:before { color: ##508ecb; }*/
+
+
+/*-菜单图标-*/
+
+.wg-icon-combine:before {
+	color: Gray;
+}
+
+.wg-icon-add:before {
+	color: Gray;
+}
+
+.wg-icon-minus:before {
+	color: Gray;
+}
+
+
+
+/*以下为图标内容样式*/
+
+.wg-icon-zhuye:before { content: "\e644"; }
+
+.wg-icon-add:before { content: "\e601"; }
+
+.wg-icon-minus:before { content: "\e602"; }
+
+.wg-icon-warehouse:before { content: "\e603"; }
+
+.wg-icon-yonghu:before { content: "\e607"; }
+
+.wg-icon-quanxian:before { content: "\e609"; }
+
+.wg-icon-shezhi:before { content: "\e60c"; }
+
+.wg-icon-manuf:before { content: "\e646"; }
+
+.wg-icon-zongbaobiao:before { content: "\e60e"; }
+
+.wg-icon-baobiao:before { content: "\e60f"; }
+
+.wg-icon-scan:before { content: "\e642"; }
+
+.wg-icon-basic:before { content: "\e66e"; }
+
+.wg-icon-quickprod:before { content: "\e613"; }
+
+.wg-icon-quickconfirmerpout:before { content: "\e603"; }
+
+.wg-icon-weifenxiaopcjiemianzhuanhuan:before { content: "\e614"; }
+
+.wg-icon-iconfont5:before { content: "\e643"; }
+
+.wg-icon-zhichu:before { content: "\e62d"; }
+
+.wg-icon-quicksign:before { content: "\e633"; }
+
+.wg-icon-otherpay:before { content: "\e635"; }
+
+.wg-icon-othercollect:before { content: "\e636"; }
+
+.wg-icon-tuihuo:before { content: "\e637"; }
+
+.wg-icon-quicktransfer:before { content: "\e638"; }
+
+.wg-icon-yejibaobiao:before { content: "\e63b"; }
+
+.wg-icon-product:before { content: "\e63c"; }
+
+.wg-icon-filter:before { content: "\e641"; }
+
+.wg-icon-otherout:before { content: "\e63d"; }
+
+.wg-icon-retail:before { content: "\e63e"; }
+
+.wg-icon-cangku:before { content: "\e63f"; }
+
+.wg-icon-quality:before { content: "\e647"; }
+
+.wg-icon-report:before { content: "\e648"; }
+
+.wg-icon-setting:before { content: "\e687"; }
+
+.wg-icon-flow:before { content: "\e68c"; }
+
+.wg-icon-quickdistribute:before { content: "\e619"; }
+
+
+/*以上为图标内容样式*/

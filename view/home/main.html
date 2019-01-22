@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<!--标准mui.css-->
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/wg-common.css">
+		<link rel="stylesheet" href="../../css/iconfont.css">
+		<!--App自定义的css-->
+		<link rel="stylesheet" type="text/css" href="../../css/app.css" />
+		<style type="text/css">
+			.wg-mian-ul {
+				width: 100%;
+				margin-top: 10px;
+				margin-bottom: 10px;
+			}
+			
+			.wg-main-li {
+				padding-top: 15px;
+				padding-bottom: 15px;
+			}
+			
+			.wg-main-title {
+				font-size: large;
+				color: #6D6D72;
+				font-weight: bolder;
+				margin-bottom: 10px;
+			}
+			
+			.wg-div-role {
+				color: white;
+				font-size: small;
+				font-weight: initial;
+				text-align: center;
+				margin-top: -10px;
+				padding: 0px 2px;
+				background-color: #F0AD4E;
+				border-radius: 4px;
+			}
+			
+			.wg-rotate90 {
+				filter: progid: DXImageTransform.Microsoft.BasicImage(rotation=1);
+				-moz-transform: rotate(90deg);
+				-o-transform: rotate(90deg);
+				-webkit-transform: rotate(90deg);
+				transform: rotate(90deg);
+			}
+			
+			.wg-icon-left {
+				color: #777777;
+				margin: 15px;
+			}
+			
+			.wg-list-price {
+				font-size: xx-large;
+				font-weight: bold;
+				color: #EC971F;
+			}
+			
+			.wg-list-yuan {
+				font-weight: bold;
+				color: #EC971F;
+			}
+			
+			.summary {
+				/*float: right;
+				margin-right: 5px;*/
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<img src="../../images/promot-3.png" width="100%" />
+			<ul id="summaryList" class="mui-table-view mui-grid-view mui-grid-9" style="background: #F7F7F8;display: none;">
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4" fdevnumber="RptProductProfit" fType="商品毛利统计" fName="商品毛利统计" fViewId="RptProductProfit_Select" fUrl="/view/Finance/RptProductProfit/List.html">
+					<a href="#">
+						<div style="float: left; vertical-align: top; text-align: left;">
+							<div style="font-size:medium;">在制库存<span style="font-size: smaller;">(k)</span></div>
+							<br />
+							<div class="summary" id="SummaryInvQty" fdevnumber="RptInv" style="font-size: small; color: #508ecb ;">---</div>
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4" fdevnumber="BusinessUnitBalance" fType="往来单位欠款" fName="往来单位欠款" fViewId="BusinessUnitBalance_Select" fUrl="/view/Finance/BusinessUnitBalance/List.html">
+					<a href="#">
+						<div style="float: left; vertical-align: top;text-align: left;">
+							<div style="font-size: medium;">不良库存<span style="font-size: smaller;">(k)</span></div>
+							<br />
+							<div class="summary" id="SummaryDefectInvQty" fdevnumber="RptDefectInv" style="font-size: small; color: #fcd209 ;">---</div>
+						</div>
+					</a>
+				</li>
+				<li class="mui-table-view-cell mui-media mui-col-xs-4 mui-col-sm-4" fdevnumber="BusinessUnitBalance" fType="往来单位欠款" fName="往来单位欠款" fViewId="BusinessUnitBalance_Select" fUrl="/view/Finance/BusinessUnitBalance/List.html">
+					<a href="#">
+						<div style="float: left; vertical-align: top;text-align: left;">
+							<div style="font-size: 11pt;">生产良率</div>
+							<br />
+							<div class="summary" id="SummaryPassRate" fdevnumber="RptPassRate" style="font-size: small; color: #4cb849 ; text-align: ;">---</div>
+						</div>
+					</a>
+				</li>
+			</ul>
+			<div id="menulist">
+			</div>
+		</div>
+	</body>
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/common.js"></script>
+	<script src="../../js/immersed.js"></script>
+	<script src="../../js/wgjs/wgyun.js"></script>
+	<script src="../../js/wgjs/extends.js"></script>
+	<script src="../../js/wgjs/CommonUtil.js"></script>
+	<script src="../../js/wgjs/ManageMenuItem.js"></script>
+	<script src="../../js/wgjs/ViewConfig.js"></script>
+	<script src="../../js/wgjs/WebviewManager.js"></script>
+	<script src="../../js/wgjs/GridColumnsUtil.js"></script>
+	<script>
+		var main, self;
+		var extendMenuItems = [{
+				"FName": "签收",
+				"FGroupName": "快速操作",
+				"FDevNumber": "QuickSign",
+				"Operation": "QuickOperation.quickSign()"
+			},
+			{
+				"FName": "转序",
+				"FGroupName": "快速操作",
+				"FDevNumber": "QuickTransfer",
+				"Operation": "QuickOperation.quickTransfer()"
+			},
+			{
+				"FName": "生产",
+				"FGroupName": "快速操作",
+				"FDevNumber": "QuickProd",
+				"Operation": "QuickOperation.quickProd()"
+			},
+			{
+				"FName": "分配",
+				"FGroupName": "快速操作",
+				"FDevNumber": "QuickDistribute",
+				"Operation": "QuickOperation.quickDistribute()"
+			},
+			{
+				"FName": "出库单校验",
+				"FGroupName": "快速操作",
+				"FDevNumber": "QuickConfirmErpOut",
+				"Operation": "QuickOperation.quickConfirmErpOut()"
+			}
+		];
+		mui.init({
+			swipeBack: false, //启用右滑关闭功能
+			keyEventBind: {
+				backbutton: false, //Boolean(默认true)关闭back按键监听
+				menubutton: false //Boolean(默认true)关闭menu按键监听
+			}
+		});
+		mui.plusReady(function() {
+			self = plus.webview.currentWebview();
+			main = plus.webview.currentWebview().opener();
+			getMainData();
+			var mmi = new mui.ManageMenuItem({
+				title: '主页菜单',
+				showGroupName: false,
+				containerid: '#menulist',
+				module: '',
+				type: 'grid',
+				extendMenus: extendMenuItems,
+				max: 15
+			});
+			//主界面向右滑动，若菜单未显示，则显示菜单；否则不做任何操作；
+			window.addEventListener("swiperight", function() {
+				mui.fire(main, 'ShowMenu', {});
+			});
+			//主界面向左滑动，若菜单已显示，则关闭菜单；否则，不做任何操作；
+			window.addEventListener("swipeleft", function() {
+				mui.fire(main, 'CloseMenu', {});
+			});
+			setTimeout(function() {
+				refreshMainMenuList();
+			}, 250);
+			// 主界面打开时，默认显示此页面，所以当此页面加载完成后关闭主界面的【等待】
+			if(plus.webview.currentWebview().parent())
+				plus.webview.currentWebview().parent().evalJS('wgyun.closeWaiting();');
+		});
+
+		function getMainData() {
+			var qm = {};
+			var getMainData =
+				function(result) {
+					if(result.FIsSuccess) {
+						FillMain(result.FObject);
+					} else {
+						mui.toast(result.FMsg);
+					}
+				};
+			CommonUtil.ajax('/Home/Home.asmx/GetSummary', qm, getMainData, true);
+		}
+
+		function FillMain(data) {
+			var invQty = data.SummaryInvQty;
+			var defectInvQty = data.SummaryDefectInvQty;
+			var passRate = data.SummaryPassRate;
+			document.getElementById("SummaryInvQty").innerHTML = DataGridUtil.QtyCell(invQty / 1000);
+			document.getElementById("SummaryDefectInvQty").innerHTML = DataGridUtil.QtyCell(defectInvQty / 1000);
+			document.getElementById("SummaryPassRate").innerHTML = DataGridUtil.PercentCell2(passRate);
+		}
+
+		/** 
+		 * 加载菜单数据并刷新
+		 **/
+		function refreshMainMenuList() {
+			var menuContent = document.querySelector('#menulist');
+			var refreshFunc = function(data) {
+				if(data.FIsSuccess) {
+					var lis = menuContent.querySelectorAll('li');
+					var summarys = menuContent.querySelectorAll('span.summary');
+					var liCount = 0,
+						summaryCount = 0;
+					mui.each(data.FObject, function(i, ei) {
+						if(liCount < lis.length) {
+							mui.each(lis, function(j, ej) {
+								//console.log(ei.FDevNumber + ', ' + ej.getAttribute('fdevnumber'));
+								if(ei.FDevNumber == ej.getAttribute('fdevnumber') && ei.FOperation == 'SELECT') {
+									if(ei.FEntryChecked > 0) {
+										ej.style.display = "inline-block";
+									} else {
+										ej.style.display = "none";
+									}
+									liCount++;
+									return false;
+								}
+							});
+						}
+						if(summaryCount < summarys.length) {
+							mui.each(summarys, function(k, ek) {
+								//console.log(ei.FDevNumber +', '+ ej.getAttribute('fdevnumber'));
+								if(ei.FDevNumber == ek.getAttribute('fdevnumber') && ei.FOperation == 'SELECT') {
+									if(ei.FEntryChecked <= 0) {
+										ek.innerText = "---";
+									}
+									summaryCount++;
+									return false;
+								}
+							});
+						}
+
+						if(liCount >= lis.length && summaryCount >= summarys.length) {
+							return false;
+						}
+					});
+					// 额外菜单显示
+					mui.each(extendMenuItems, function(i, ei) {
+						mui.each(lis, function(j, ej) {
+							if(ei.FDevNumber == ej.getAttribute('fdevnumber')) {
+								ej.style.display = "inline-block";
+								return false;
+							}
+						});
+					});
+				} else {
+					mui.toast(data.FMsg);
+				};
+			}
+			CommonUtil.ajax('/Account/Account.asmx/GetUserOpertaionWithQA', {}, refreshFunc);
+		};
+	</script>
+
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>分配任务</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../../css/wg-common.css">
+		<link rel="stylesheet" href="../../../css/iconfont.css">
+		<link rel="stylesheet" href="../../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../../css/mui.picker.min.css" />
+		<link rel="stylesheet" href="../../../css/mui.poppicker.css" />
+	</head>
+
+	<body>
+		<div class="mui-content" id="main">
+			<div class="mui-content-padded" style="margin: 5px;">
+				<form class="mui-input-group">
+					<div class="mui-input-row">
+						<label><span class="wg-editTag-force">✎ </span>部门</label>
+						<!--后期有时间应做修改，使用Vue组件，并且用v-on:tap绑定tap事件-->
+						<button type="button" class="mui-btn mui-btn-block wg-pick wg-btn-placeHolder" id="FDeptName" name="FDeptName" style="width: auto; margin-top: 1px; float: left;border: black;">
+							请选择部门</button>
+						<input type="text" class="mui-input mui-hidden" id="FDeptID" name="FDeptID" v-model="FDeptID">
+					</div>
+					<div class="mui-input-row">
+						<label><span class="wg-editTag-force">✎ </span>操作员</label>
+						<button type="button" class="mui-btn mui-btn-block wg-pick wg-btn-placeHolder" id="FEmpName" name="FEmpName" style="width: auto; margin-top: 1px; float: left;border: black;">请选择操作员</button>
+						<input type="text" class="mui-input mui-hidden" id="FEmpID" name="FEmpID" v-model="FEmpID">
+					</div>
+					<div class="mui-input-row">
+						<label><span class="wg-editTag-force">✎ </span>班次</label>
+						<button type="button" class="mui-btn mui-btn-block wg-pick wg-btn-placeHolder" id="FClassNo" name="FClassNo" style="width: auto; margin-top: 1px; float: left;border: black;">请选择班次</button>
+						<input type="text" class="mui-input mui-hidden" id="FClassNoID" name="FClassNoID" v-model="FClassNoID">
+					</div>
+					<div class="mui-input-row">
+						<label><span class="wg-editTag-force">✎ </span>机台</label>
+						<button type="button" class="mui-btn mui-btn-block wg-pick wg-btn-placeHolder" id="FLineNo" name="FLineNo" style="width: auto; margin-top: 1px; float: left;border: black;">请选择机台</button>
+						<input type="text" class="mui-input mui-hidden" id="FLineID" name="FLineID" v-model="FLineID">
+					</div>
+				</form>
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" id="btnScan" style="margin-top: 10px;">扫码分配</button>
+			</div>
+		</div>
+		<script src="../../../js/mui.min.js"></script>
+		<script src="../../../js/mui.picker.min.js"></script>
+		<script src="../../../js/mui.enterfocus.js"></script>
+		<script src="../../../js/vue.min.js"></script>
+		<script src="../../../js/wgjs/wgyun.js"></script>
+		<script src="../../../js/wgjs/extends.js"></script>
+		<script src="../../../js/wgjs/ViewConfig.js"></script>
+		<script src="../../../js/wgjs/WebviewManager.js"></script>
+		<script src="../../../js/wgjs/CommonUtil.js"></script>
+		<script src="../../../js/wgjs/wgpoppicker.js"></script>
+		<script src="../../../js/wgjs/BasicData.js"></script>
+		<script src="../../../js/views/Prod/Manuf/Distribute.js"></script>
+		<script>
+			if(window.plus && window.mui) {
+				oTarget.plusready();
+			} else {
+				document.addEventListener('plusready', function(event) {
+					oTarget.plusready();
+				}, false);
+			}
+		</script>
+	</body>
+
+</html>

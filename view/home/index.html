@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/wg-common.css">
+		<link rel="stylesheet" href="../../css/iconfont.css">
+		<style>
+			html,
+			body {
+				background-color: #efeff4;
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<h1 id="title" class="mui-title">望果MES</h1>
+			<a class="mui-icon mui-icon-bars mui-pull-left"></a>
+		</header>
+		<!--<nav class="mui-bar mui-bar-tab">
+			<a id="defaultTab" class="mui-tab-item mui-active" href="main.html">
+				<span class="wg-icon wg-icon-main"></span>
+				<span class="mui-tab-label">首页</span>
+			</a>
+			<a class="mui-tab-item" href="Prod.html">
+				<span class="wg-icon wg-icon-buy"></span>
+				<span class="mui-tab-label">生产</span>
+			</a>
+			<a class="mui-tab-item" href="Quality.html">
+				<span class="wg-icon wg-icon-quality"></span>
+				<span class="mui-tab-label">质量</span>
+			</a>
+			<a class="mui-tab-item" href="Report.html">
+				<span class="wg-icon wg-icon-report"></span>
+				<span class="mui-tab-label">报表</span>
+			</a>
+		</nav>-->
+		<script src="../../js/mui.min.js"></script>
+		<script src="../../js/wgjs/extends.js"></script>
+		<script src="../../js/wgjs/wgyun.js"></script>
+		<script src="../../js/wgjs/WebviewManager.js"></script>
+		<script src="../../js/wgjs/CommonUtil.js"></script>
+		<script type="text/javascript" charset="utf-8">
+			var main, menu, mask, User, ServerDBName;
+			var showMenu = false,
+				isDoLogoff = false,
+				mode = 'menu-move';
+			// 连续按两次返回键时退出系统
+			var backButtonPress = 0;
+			//mui初始化
+			mui.init({
+				swipeBack: false, //启用右滑关闭功能
+				beforeback: back
+			});
+			//			var subpages = ['main.html', 'Prod.html', 'Quality.html', 'Report.html'];
+			var subpages = ['main.html'];
+			var subpage_style = {
+				position: 'fixed',
+				top: '45px',
+				bottom: '51px',
+				zindex: 1
+			};
+			var aniShow = {};
+			//创建子页面，首个选项卡页面显示，其它均隐藏；
+			mui.plusReady(function() {
+				wgyun.showCommonWaiting();
+				main = plus.webview.currentWebview();
+				User = main.User;
+				ServerDBName = main.ServerDBName;
+
+				AppSecurityHeader.init(User, ServerDBName);
+				for(var i = 0; i < 1; i++) {
+					var temp = {};
+					var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
+					if(i > 0) {
+						sub.hide();
+					} else {
+						temp[subpages[i]] = "true";
+						mui.extend(aniShow, temp);
+						currentTabView = sub;
+					}
+					main.append(sub);
+				}
+				setTimeout(function() {
+					for(var i = 1; i < subpages.length; i++) {
+						var temp = {};
+						var sub = plus.webview.create(subpages[i], subpages[i], subpage_style);
+						if(i > 0) {
+							sub.hide();
+						} else {
+							temp[subpages[i]] = "true";
+							mui.extend(aniShow, temp);
+						}
+						main.append(sub);
+					}
+				}, 300);
+				//wgyun.closeWaiting();
+				//setTimeout的目的是等待窗体动画结束后，再执行create webview操作，避免资源竞争，导致窗口动画不流畅；
+				setTimeout(function() {
+					//mask = mui.createMask(_closeMenu);
+					plus.webview.currentWebview().addEventListener("maskClick", function() {
+						closeMenu();
+					}, false);
+					//侧滑菜单默认隐藏，这样可以节省内存；
+					menu = mui.preload({
+						id: 'index-slidemenu',
+						url: 'index-slidemenu.html',
+						styles: {
+							left: 0,
+							width: '70%',
+							zindex: 999
+						},
+						extras: {
+							User: main.User
+						}
+					});
+				}, 500);
+
+			});
+			//当前激活选项
+			var currentTabView = null;
+			var activeTab = subpages[0];
+			var title = document.getElementById("title");
+			//选项卡点击事件
+			mui('.mui-bar-tab').on('tap', 'a', function(e) {
+				var targetTab = this.getAttribute('href');
+				if(targetTab == activeTab) {
+					if(targetTab.indexOf('main') >= 0) {
+						var wv = plus.webview.getWebviewById(targetTab);
+						wv.evalJS('getMainData()');
+					}
+					return;
+				}
+				//更换标题
+				var sTitle = this.querySelector('.mui-tab-label').innerHTML
+				// mui.alert(sTitle);
+				title.innerHTML = (sTitle == '望果MES' ? sTitle : ('望果MES-' + sTitle));
+				//显示目标选项卡
+				//若为iOS平台或非首次显示，则直接显示
+				if(mui.os.ios || aniShow[targetTab]) {
+					plus.webview.show(targetTab, "fade-in", 100);
+				} else {
+					//否则，使用fade-in动画，且保存变量
+					var temp = {};
+					temp[targetTab] = "true";
+					mui.extend(aniShow, temp);
+					plus.webview.show(targetTab, "fade-in", 300);
+				}
+				currentTabView = plus.webview.getWebviewById(targetTab);
+				if(currentTabView) {
+					//隐藏当前;
+					plus.webview.hide(activeTab);
+					//更改当前活跃的选项卡
+					activeTab = targetTab;
+				} else {
+					mui.toast('请稍候...');
+				}
+			});
+			//自定义事件，模拟点击“首页选项卡”
+			document.addEventListener('gohome', function() {
+				var defaultTab = document.getElementById("defaultTab");
+				//模拟首页点击
+				mui.trigger(defaultTab, 'tap');
+				//切换选项卡高亮
+				var current = document.querySelector(".mui-bar-tab>.mui-tab-item.mui-active");
+				if(defaultTab !== current) {
+					current.classList.remove('mui-active');
+					defaultTab.classList.add('mui-active');
+				}
+			});
+			document.addEventListener('ShowMenu', function(event) {
+				openMenu();
+			});
+			document.addEventListener('CloseMenu', function(event) {
+				closeMenu();
+			});
+			/**
+			 * 显示菜单菜单
+			 */
+			function openMenu() {
+				if(!showMenu && menu) {
+					//侧滑菜单处于隐藏状态，则立即显示出来；
+					//显示完毕后，根据不同动画效果移动窗体；
+					menu.show('none', 0, function() {
+						switch(mode) {
+							case 'main-move':
+								//主窗体开始侧滑；
+								main.setStyle({
+									left: '70%',
+									transition: {
+										duration: 150
+									}
+								});
+								break;
+							case 'menu-move':
+								menu.setStyle({
+									left: '0%',
+									transition: {
+										duration: 150
+									}
+								});
+								break;
+						}
+					});
+					//显示遮罩
+					// ** mask.show();
+					plus.webview.currentWebview().setStyle({
+						mask: "rgba(0,0,0,0.5)"
+					});
+					showMenu = true;
+				}
+			}
+			/**
+			 * 关闭侧滑菜单
+			 */
+			function closeMenu() {
+				_closeMenu();
+				//关闭遮罩
+				plus.webview.currentWebview().setStyle({
+					mask: "none"
+				});
+			}
+			/**
+			 * 关闭侧滑菜单（业务部分）
+			 */
+			function _closeMenu() {
+				if(showMenu) {
+					//关闭遮罩；
+					switch(mode) {
+						case 'main-move':
+							//主窗体开始侧滑；
+							main.setStyle({
+								left: '0',
+								transition: {
+									duration: 150
+								}
+							});
+							break;
+						case 'menu-move':
+							//主窗体开始侧滑；
+							menu.setStyle({
+								left: '-70%',
+								transition: {
+									duration: 150
+								}
+							});
+							break;
+					}
+					//等窗体动画结束后，隐藏菜单webview，节省资源；
+					setTimeout(function() {
+						menu.hide();
+					}, 200);
+					//改变标志位
+					showMenu = false;
+				}
+			}
+			//点击左上角图标，打开侧滑菜单；
+			document.querySelector('.mui-icon-bars').addEventListener('tap', openMenu);
+			//在android4.4中的swipe事件，需要preventDefault一下，否则触发不正常
+			//故，在dragleft，dragright中preventDefault
+			window.addEventListener('dragright', function(e) {
+				e.detail.gesture.preventDefault();
+			});
+			window.addEventListener('dragleft', function(e) {
+				e.detail.gesture.preventDefault();
+			});
+			//主界面向右滑动，若菜单未显示，则显示菜单；否则不做任何操作；
+			window.addEventListener("swiperight", openMenu);
+			//主界面向左滑动，若菜单已显示，则关闭菜单；否则，不做任何操作；
+			window.addEventListener("swipeleft", closeMenu);
+			//menu页面向左滑动，关闭菜单；
+			window.addEventListener("menu:swipeleft", closeMenu);
+			//重写mui.menu方法，Android版本menu按键按下可自动打开、关闭侧滑菜单；
+			mui.menu = function() {
+				if(showMenu) {
+					closeMenu();
+				} else {
+					openMenu();
+				}
+			};
+
+			function back() {
+				if(showMenu) {
+					//菜单处于显示状态，返回键应该先关闭菜单,阻止主窗口执行mui.back逻辑；
+					closeMenu();
+					return false;
+				} else {
+					//菜单处于隐藏状态，执行返回时，要先close菜单页面，然后继续执行mui.back逻辑关闭主窗口；
+					if(isDoLogoff) {
+						return true;
+					} else {
+						backButtonPress++;
+						if(backButtonPress > 1) {
+							menu.close('none');
+							plus.runtime.quit();
+						} else {
+							mui.toast('再按一次退出望果MES');
+						}
+						setTimeout(function() {
+							backButtonPress = 0;
+						}, 1500);
+						return false;
+					}
+				}
+			}
+
+			function logoff() {
+				isDoLogoff = true;
+			}
+		</script>
+	</body>
+
+</html>

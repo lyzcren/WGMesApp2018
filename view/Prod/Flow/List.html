@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>流程单</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<link href="../../../css/mescroll.min.css" rel="stylesheet" />
+		<link href="../../../css/wg-common.css" rel="stylesheet" />
+		<style type="text/css">
+
+		</style>
+	</head>
+
+	<body>
+
+		<div class="mui-content" id="dataSource">
+			<!--列表信息流 开始-->
+			<div id="pullrefresh" class="mescroll">
+				<!--<div id="pullrefresh" class="mui-scroll-wrapper">-->
+				<!--<div class="mui-scroll">-->
+				<ul class="mui-table-view">
+					<li class="mui-table-view-cell mui-media" v-for="item in items">
+						<a href="javascript:;" :data-guid="item.guid" @tap="open_detail(item)">
+							<div class="wg-menuitemlabel wg-list-content" style="float: left;">
+								<div class="wg-list-title">{{item.FBatchNo}}</div>
+								<div class="wg-list-desc">{{item.FProductName}}
+									<div style="float:right">{{item.FModel}}</div>
+								</div>
+								<div class="wg-list-desc">{{item.FCreateDate|ToShortDate}}
+									<div style="float:right">{{item.FStatusNamel}}</div>
+								</div>
+								<div class="wg-list-desc">投产:{{item.FInputQty}}{{item.FUnitName}}
+									<div style="float:right">总投产:{{item.FTotalInputQty}}{{item.FUnitName}}</div>
+								</div>
+							</div>
+						</a>
+					</li>
+				</ul>
+				<!--</div>-->
+			</div>
+			<!--列表信息流 结束-->
+		</div>
+		<script src="../../../js/mui.min.js"></script>
+		<script src="../../../js/mescroll.min.js"></script>
+		<script src="../../../js/common.js"></script>
+		<script src="../../../js/vue.min.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../../js/wgjs/VueExtends.js"></script>
+		<script src="../../../js/wgjs/extends.js"></script>
+		<script src="../../../js/wgjs/wgyun.js"></script>
+		<script src="../../../js/wgjs/ViewConfig.js"></script>
+		<script src="../../../js/wgjs/WebviewManager.js"></script>
+		<script src="../../../js/wgjs/CommonUtil.js"></script>
+		<script src="../../../js/wgjs/GridColumnsUtil.js"></script>
+		<script src="../../../js/wgjs/SysObject.js"></script>
+		<!--<script src="../../../js/views/Prod/Flow/ConfigColumns.js"></script>-->
+		<script src="../../../js/views/Prod/Flow/List.js"></script>
+		<script>
+			function open_detail(item) {
+				oTarget.open_detail(item);
+			}
+			if(window.plus && window.mui) {
+				oTarget.plusready();
+			} else {
+				document.addEventListener('plusready', function(event) {
+					oTarget.plusready();
+				}, false);
+			}
+		</script>
+	</body>
+
+</html>

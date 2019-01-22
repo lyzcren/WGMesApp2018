@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>Hello MUI</title>
+		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="../../css/mui.min.css">
+		<link rel="stylesheet" href="../../css/wg-common.css">
+		<style>
+			body,
+			.mui-content {
+				background-color: #333;
+				color: #fff;
+			}
+			
+			header.mui-bar {
+				display: none;
+			}
+			
+			.mui-bar-nav~.mui-content {
+				padding: 0;
+			}
+			
+			.title {
+				margin: 15px 15px 10px;
+				text-align: center;
+			}
+			
+			.title+.content {
+				margin: 10px 15px 35px;
+				color: #bbb;
+				text-indent: 2em;
+				font-size: 12px;
+				line-height: 20px;
+			}
+			
+			.mui-table-view {
+				margin-bottom: 30px;
+			}
+			
+			#logo {
+				background-position: center center;
+				width: 38px;
+				height: 38px;
+				border: 1px solid #D7D7D7;
+				border-radius: 32px;
+				margin-right: 3px;
+				margin-top: 3px;
+				float: left;
+				position: relative;
+				background-size: 32px 32px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="title yellow">望果MES系统</div>
+			<div class="content">
+				<div style="text-align: center;">
+					<img src="../../images/icons-xhdpi.png" /></div>
+				<div style="text-align: left;margin-top: 10px;">
+					<img id="logo" src="../../images/user-photo.png" style="" />
+					<div style="color: #508ecb; font-size: medium;" id="lblUserName">---</div>
+					<div style="color: #508ecb; font-size: medium;" id="lblUserNumber">---</div>
+					<!--<div style="color: #4cb849; font-size: medium; margin-left: -25px;" id="lblCompanyName">---</div>-->
+				</div>
+				<p style="margin: 10px 15px;">
+					<!--<button id="close-btn" type="button" class="mui-btn mui-btn-danger mui-btn-block" style="padding: 5px 20px;">关闭侧滑菜单</button>-->
+				</p>
+			</div>
+			<div class="title" style="margin-bottom: 10px;"></div>
+			<ul id="menulist" class="mui-table-view mui-table-view-chevron mui-table-view-inverted">
+				<!--<li class="mui-table-view-cell">
+					<a class="mui-navigate-right" type="basic" id="BasicData">
+						基础资料
+					</a>
+				</li>-->
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right" type="upgrade">
+						检查更新
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right" type="logoff">
+						注销登录
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right" type="systemout">
+						退出系统
+					</a>
+				</li>
+			</ul>
+			<br />
+			<div id="appversion" style="padding-left: 10px;"></div>
+		</div>
+	</body>
+
+	<script src="../../js/mui.min.js"></script>
+	<script src="../../js/wgjs/extends.js"></script>
+	<script src="../../js/wgjs/wgyun.js"></script>
+	<script src="../../js/app.js"></script>
+	<script src="../../js/wgjs/CommonUtil.js"></script>
+	<script type="text/javascript" charset="utf-8">
+		var oSettings;
+		mui.init({
+			keyEventBind: {
+				backbutton: false,
+				menubutton: false
+			}
+		});
+		//获得侧滑主窗口webview对象
+		var main = null;
+		mui.plusReady(function() {
+			oSettings = app.getSettings();
+			self = plus.webview.currentWebview();
+			main = plus.webview.currentWebview().opener();
+			var lblUserName = document.getElementById("lblUserName");
+			var appversion = document.getElementById("appversion");
+			var logo = document.getElementById("logo");
+			lblUserName.innerHTML = self.User.FName;
+			lblUserNumber.innerHTML = self.User.FNumber;
+			lblUserName.addEventListener('tap', userNameClickHandler);
+			plus.runtime.getProperty(plus.runtime.appid, function(inf) {
+				CommonUtil.AppVersion = inf.version;
+				appversion.innerHTML = 'v' + CommonUtil.AppVersion + '(' + CommonUtil.ResVersion + ')';
+				setTimeout(function() {
+					detectVersion(false);
+				}, 2000);
+			});
+		});
+
+		function closeMenu() {
+			mui.fire(main, "menu:swipeleft");
+		};
+
+		function startDownload(url4Android, url4iOS) {
+			if(mui.os.ios) { // iOS 跳转至AppStore下载地址
+				if(!url4iOS) {
+					url4iOS = 'itms-apps://itunes.apple.com/cn'; // 应用在appstore的地址
+				}
+				plus.runtime.openURL(url4iOS);
+				logoff(function() {
+					backToLogin();
+				});
+			} else { // Android 下载服务器上的安装包并安装
+				var waiting = wgyun.showWaiting('正在下载最新版本, 请稍候...');
+				waiting.setTitle();
+				var dtask = plus.downloader.createDownload(url4Android, {}, function(d, status) {
+					wgyun.closeWaiting();
+					logoff(function() {
+						backToLogin();
+					});
+					if(status == 200) { // 下载成功
+						mui.toast("下载成功.");
+						var path = d.filename;
+						//alert(dtask.downloadedSize);
+						plus.runtime.install(path);
+					} else {
+						mui.toast("下载失败: " + status);
+						setTimeout(function() {
+							plus.runtime.quit();
+						}, 250);
+					}
+				});
+//				dtask.addEventListener("statechanged", function(task, status) {
+//				console.log(task.state);
+//					switch(task.state) {
+//						case 1: // 开始
+//							break;
+//						case 2: //已连接到服务器
+//							break;
+//						case 3: // 已接收到数据
+//							var current = parseInt(100 * task.downloadedSize / task.totalSize);
+//							plus.notification.setProgress(current); //插件调用
+//							break;
+//						case 4: // 下载完成         
+//							plus.notification.compProgressNotification("下载完成"); //插件调用
+//							plus.runtime.install(plus.io.convertLocalFileSystemURL(task.filename), //安装APP
+//								{
+//									force: true
+//								},
+//								function() {
+//
+//								},
+//								function() {
+//									mui.toast('安装失败');
+//								});
+//							break;
+//					}
+//				});
+				dtask.start();
+			}
+		};
+		// 下载资源更新包
+		function downWgt(url) {
+			wgyun.showWaiting("下载更新文件...");
+			plus.downloader.createDownload(url, {
+				filename: "_doc/update/"
+			}, function(d, status) {
+				wgyun.closeWaiting();
+				if(status == 200) {
+					//console.log("下载更新成功：" + d.filename);
+					installWgt(d.filename); // 安装wgt包
+				} else {
+					plus.nativeUI.alert("下载更新失败！");
+				}
+			}).start();
+		}
+		// 更新应用资源
+		function installWgt(path) {
+			wgyun.showWaiting("安装更新文件...");
+			plus.runtime.install(path, {
+				filename: "_doc/update/",
+				force: true
+			}, function() {
+				wgyun.closeWaiting();
+				// plus.nativeUI.alert("更新完成！", function() {});
+				if(mui.os.ios) { // iOS 中restart重启应用程序时运行版本仍为旧版，须手动重启才能启动更新的版本
+					mui.alert('请双击Home键退出程序并重新打开');
+				} else {
+					var btnArray = ['立即重启', '再等等'];
+					mui.confirm('更新完成,为了您更好的使用系统,建议您立即重启!', '望果MES', btnArray, function(e) {
+						if(e.index == 0) {
+							plus.runtime.restart();
+						}
+					});
+				}
+			}, function(e) {
+				wgyun.closeWaiting();
+				plus.nativeUI.alert("安装更新文件失败");
+			});
+		}
+
+		function detectVersion(isShowTips) {
+			var waiting = wgyun.showWaiting((isShowTips ? '检测版本中...' : ''));
+			mui.ajax(CommonUtil.HostUrl + '/Base/SysSetup.asmx/GetSysSetup', {
+				data: JSON.stringify({
+					fNumbers: 'AppMinVersion;AppUpdateVersion;AppResVersion;AppDownloadUrl;AppDownloadResUrl;AppStoreUrl'
+				}),
+				contentType: 'application/json; charset=utf-8', // 提交的参数是JSON格式时,要设置contentType
+				dataType: 'json', //服务器返回json格式数据
+				type: 'POST', //HTTP请求类型
+				timeout: 25000, //超时时间设置为25秒；
+				success: function(data, b, c) {
+					wgyun.closeWaiting();
+					data = CommonUtil.toObject(data.d);
+					if(data.FIsSuccess) {
+						var sMinVersion = '',
+							sUpdateVersion = '',
+							sResVersion = '';
+						var downloadUrl = '',
+							downloadResUrl = '',
+							appStoreUrl = '';
+						mui.each(data.FObject, function(index, element) {
+							if(element.FNumber == 'AppMinVersion') {
+								sMinVersion = element.FValue;
+							} else if(element.FNumber == 'AppUpdateVersion') {
+								sUpdateVersion = element.FValue;
+							} else if(element.FNumber == 'AppResVersion') {
+								sResVersion = element.FValue;
+							} else if(element.FNumber == 'AppDownloadUrl') {
+								downloadUrl = element.FValue;
+							} else if(element.FNumber == 'AppDownloadResUrl') {
+								downloadResUrl = element.FValue;
+							} else if(element.FNumber == 'AppStoreUrl') {
+								appStoreUrl = element.FValue;
+							}
+						});
+						if(CommonUtil.compareVersion(CommonUtil.AppVersion, sMinVersion) == -1) {
+							// 当前版本是否低于最低要求运行版本，是则强制更新
+							mui.toast('检测到更高版本!');
+							startDownload(downloadUrl, appStoreUrl);
+						} else if(CommonUtil.compareVersion(CommonUtil.AppVersion, sUpdateVersion) == -1) {
+							// 当前版本是否低于最新版本，是则提示更新
+							var btnArray = ['马上升级', '下一次吧'];
+							mui.confirm('存在更高版本,是否升级？', '望果MES', btnArray, function(e) {
+								if(e.index == 0) {
+									startDownload(downloadUrl, appStoreUrl);
+								} else if(CommonUtil.compareVersion(CommonUtil.ResVersion, sResVersion) == -1) {
+									// 不升级版本时，若存在更新包则更新资源包
+									downWgt(downloadResUrl);
+								}
+							});
+						} else if(CommonUtil.compareVersion(CommonUtil.ResVersion, sResVersion) == -1) {
+							// mui.alert(CommonUtil.ResVersion + ',' + sResVersion);
+							downWgt(downloadResUrl);
+						} else {
+							if(isShowTips)
+								mui.toast('当前已是最高版本!');
+						}
+					} else {
+						mui.toast(data.FMsg);
+					}
+				},
+				error: function(xhr, type, errorThrown) {
+					mui.alert((xhr.responseText ? ('服务异常: ' + xhr.responseText) : '服务异常'), '望果MES');
+					wgyun.closeWaiting();
+				}
+			});
+		}
+
+		function logoff(callback) {
+			AppSecurityHeader.init(self.User);
+			var waiting = wgyun.showWaiting('正在注销...');
+			var queryString = {};
+			var ajaxFunc = function(data) {
+				wgyun.closeWaiting();
+				if(callback)
+					callback();
+			};
+			CommonUtil.ajax('/Account/Account.asmx/Logoff', queryString, ajaxFunc);
+		}
+		//优化显示出来的侧滑菜单，只需监听该菜单的左滑事件，然后将其关闭即可；在菜单上右滑，不做任何操作；
+		window.addEventListener("swipeleft", closeMenu);
+		mui.menu = closeMenu;
+
+		mui('#menulist').on('tap', 'a', function(event) {
+			var elem = this;
+			switch(elem.getAttribute("type")) {
+				case 'basic':
+					BasicClickHandler();
+					break;
+				case 'upgrade':
+					detectVersion(true);
+					break;
+				case 'logoff':
+					logoff(function() {
+						backToLogin();
+					});
+					break;
+				case 'systemout':
+					logoff(function() {
+						if(mui.os.ios) {
+							mui.alert('请双击Home键退出程序');
+						} else {
+							setTimeout(function() {
+								plus.runtime.quit();
+							}, 250);
+						}
+					});
+					break;
+			}
+		});
+
+		function backToLogin() {
+			var oSettings = app.getSettings();
+			oSettings.FPassword = '';
+			app.setSettings(oSettings);
+			plus.webview.currentWebview().hide();
+			//			wgyun.hidePage(plus.webview.getWebviewById('home_index'));
+			plus.webview.close('home_index');
+			//			plus.webview.getWebviewById('home_index');
+			//			plus.webview.currentWebview().close();
+		}
+
+		function userNameClickHandler(event) {
+			//			wgyun.openPage({
+			//				url: '/view/UM/User/EditSelf.html',
+			//				id: 'UserEditSelf'
+			//			});
+			//			closeMenu();
+		}
+
+		function BasicClickHandler(event) {
+			//			wgyun.openPage({
+			//				url: '/view/Basic/BasicData/BasicData.html',
+			//				id: 'BasicData'
+			//			});
+			//			closeMenu();
+		}
+	</script>
+
+</html>

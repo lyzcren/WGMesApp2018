@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>工艺参数</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../../css/wg-common.css">
+		<link rel="stylesheet" href="../../../css/iconfont.css">
+		<link rel="stylesheet" href="../../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../../css/mui.picker.min.css" />
+		<link rel="stylesheet" href="../../../css/mui.poppicker.css" />
+		<style type="text/css">
+			.mui-table-view *[readonly] {
+				color: #666666;
+			}
+			/*#topInfo {
+				height: 80px;
+				padding-left: 10px;
+				padding-right: 10px;
+				padding-top: 5px;
+			}*/
+			
+			#bottomInfo {
+				height: auto;
+				padding-left: 10px;
+				padding-right: 10px;
+				padding-top: 10px;
+				padding-bottom: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="mui-input-group" id="topInfo"></div>
+			<div class="mui-table-view" id="main"></div>
+			<div class="mui-input-group" id="bottomInfo"></div>
+		</div>
+		<script src="../../../js/mui.min.js"></script>
+		<script src="../../../js/mui.enterfocus.js"></script>
+		<script src="../../../js/mui.picker.min.js"></script>
+		<script src="../../../js/wgjs/extends.js"></script>
+		<script src="../../../js/wgjs/wgyun.js"></script>
+		<script src="../../../js/wgjs/ViewConfig.js"></script>
+		<script src="../../../js/wgjs/WebviewManager.js"></script>
+		<script src="../../../js/wgjs/CommonUtil.js"></script>
+		<script src="../../../js/wgjs/GridColumnsUtil.js"></script>
+		<script src="../../../js/wgjs/SysObject.js"></script>
+		<script src="../../../js/wgjs/wgpoppicker.js"></script>
+		<script src="../../../js/wgjs/BasicData.js"></script>
+		<script src="../../../js/views/Prod/Manuf/ConfigColumns.js"></script>
+		<script src="../../../js/views/Prod/Manuf/View_Technic.js"></script>
+		<script>
+			if(window.plus && window.mui) {
+				oTarget.plusready();
+			} else {
+				document.addEventListener('plusready', function(event) {
+					oTarget.plusready();
+				}, false);
+			}
+		</script>
+	</body>
+
+</html>

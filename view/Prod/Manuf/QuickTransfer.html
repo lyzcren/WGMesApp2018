@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>快速转序</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="../../../css/mui.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="../../../css/wg-common.css">
+		<link rel="stylesheet" href="../../../css/iconfont.css">
+		<link rel="stylesheet" href="../../../css/mui.picker.css" />
+		<link rel="stylesheet" href="../../../css/mui.picker.min.css" />
+		<link rel="stylesheet" href="../../../css/mui.poppicker.css" />
+		<style>
+			.wg-pick {
+				width: 100%;
+				margin-top: 1px;
+				float: left !important;
+				border: black;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content" id="main">
+			<div class="mui-content-padded" style="margin: 5px;">
+				<form class="mui-input-group">
+					<div class="mui-input-row">
+						<label>批号</label>
+						<input type="text" class="mui-input" id="FBatchNo" name="FBatchNo" v-model="FBatchNo" readonly>
+					</div>
+					<div class="mui-input-row">
+						<label>产品名称</label>
+						<input type="text" class="mui-input" id="FProductName" name="FProductName" v-model="FProductName" readonly>
+					</div>
+					<div class="mui-input-row">
+						<label>规格型号</label>
+						<input type="text" class="mui-input" id="FModel" name="FModel" v-model="FModel" readonly>
+					</div>
+					<div class="mui-input-row">
+						<label>投产数量</label>
+						<input type="text" class="mui-input" id="FInputQty" name="FInputQty" v-model="FShowInputQty" readonly>
+					</div>
+					<div class="mui-input-row">
+						<label>合格数量</label>
+						<input type="text" class="mui-input" id="FPassQty" name="FPassQty" v-model="FShowPassQty" readonly>
+					</div>
+					<div class="mui-input-row">
+						<label>当前工序</label>
+						<input type="text" class="mui-input" id="FDeptFullName" name="FDeptFullName" v-model="FDeptFullName" readonly>
+					</div>
+					<div class="mui-input-row">
+						<label><span class="wg-editTag-force">✎ </span>操作员</label>
+						<button type="button" class="mui-btn mui-btn-block wg-pick" id="FEmpName" name="FEmpName"><span :class="FEmpID? ``:`wg-btn-placeHolder`">{{FEmpName?FEmpName: `请选择操作员`}}</span></button>
+						<input type="text" class="mui-input mui-hidden" id="FEmpID" name="FEmpID" v-model="FEmpID">
+					</div>
+					<div class="mui-input-row">
+						<label><span class="wg-editTag">✎ </span>班次</label>
+						<button type="button" class="mui-btn mui-btn-block wg-pick" id="FClassNo" name="FClassNo"><span :class="FClassNoID? ``:`wg-btn-placeHolder`">{{FClassNo?FClassNo: `请选择班次`}}</span></button>
+						<input type="text" class="mui-input mui-hidden" id="FClassNoID" name="FClassNoID" v-model="FClassNoID">
+					</div>
+					<div class="mui-input-row">
+						<label><span class="wg-editTag">✎ </span>机台</label>
+						<button type="button" class="mui-btn mui-btn-block wg-pick" id="FLineNo" name="FLineNo"><span :class="FLineID? ``:`wg-btn-placeHolder`">{{FLineNo?FLineNo: `请选择机台`}}</span></button>
+						<input type="text" class="mui-input mui-hidden" id="FLineID" name="FLineID" v-model="FLineID">
+					</div>
+					<div class="mui-input-row">
+						<label><span class="wg-editTag">✎ </span>模具</label>
+						<button type="button" class="mui-btn mui-btn-block wg-pick" id="FMoldName" name="FMoldName"><span :class="FMoldID? ``:`wg-btn-placeHolder`">{{FMoldName?FMoldName: `请选择模具`}}</span></button>
+						<input type="text" class="mui-input mui-hidden" id="FMoldID" name="FMoldID" v-model="FMoldID">
+					</div>
+				</form>
+				<button type="button" class="mui-btn mui-btn-primary mui-btn-block" id="btnTransfer" style="margin-top: 10px;">转序</button>
+			</div>
+		</div>
+		<script src="../../../js/mui.min.js"></script>
+		<script src="../../../js/mui.picker.min.js"></script>
+		<script src="../../../js/mui.enterfocus.js"></script>
+		<script src="../../../js/vue.min.js"></script>
+		<script src="../../../js/wgjs/wgyun.js"></script>
+		<script src="../../../js/wgjs/extends.js"></script>
+		<script src="../../../js/wgjs/ViewConfig.js"></script>
+		<script src="../../../js/wgjs/WebviewManager.js"></script>
+		<script src="../../../js/wgjs/CommonUtil.js"></script>
+		<script src="../../../js/wgjs/wgpoppicker.js"></script>
+		<script src="../../../js/wgjs/BasicData.js"></script>
+		<script src="../../../js/views/Prod/Manuf/QuickTransfer.js"></script>
+		<script>
+			if(window.plus && window.mui) {
+				oTarget.plusready();
+			} else {
+				document.addEventListener('plusready', function(event) {
+					oTarget.plusready();
+				}, false);
+			}
+		</script>
+	</body>
+
+</html>
